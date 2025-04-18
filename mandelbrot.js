@@ -1,13 +1,18 @@
-function mandelbrot()
+var default_x_range = 3.00;
+var default_x_offset = -2.0;
+var default_y_range = 3.00;
+var default_y_offset = -1.5;
+
+function mandelbrot(image_w, image_h, zoom_amount)
 {
-    var x_range = 3.00;
-    var x_offset = -2.0;
-    var y_range = 3.00;
-    var y_offset = -1.5;
+    var x_range = default_x_range/zoom_amount;
+    var x_offset = default_x_offset/zoom_amount;
+    var y_range = default_y_range/zoom_amount;
+    var y_offset = default_y_offset/zoom_amount;
     var max_iterations = 100;
 
-    var image_w = 900;
-    var image_h = 750;
+    //var image_w = 900;
+    //var image_h = 750;
     var arr = new Uint8ClampedArray(image_w*image_h*4);
 
     for (let pixel_y = 0; pixel_y < image_h; pixel_y++)
@@ -61,7 +66,7 @@ function test()
 
     ctx.clearRect(0, 0, cw, ch);
     var t0 = new Date();
-    ctx.putImageData(mandelbrot(), 20, 20);
+    ctx.putImageData(mandelbrot(900, 900, 2), 20, 20);
     var t1 = new Date();
     console.log('mandelbrot time: ' + (t1.getMilliseconds() - t0.getMilliseconds()));
  
