@@ -3,17 +3,41 @@ var default_x_offset = -2.0;
 var default_y_range = 3.00;
 var default_y_offset = -1.5;
 
+var max_iterations = 50;
+
+function lerp(a, b, t)
+{
+    return a + ((b-a) * t);
+}
+
+function get_colours()
+{
+    var col1 = [32, 32, 48];
+    var col2 = [68, 68, 102];
+    var col_arr = new Array();
+    for (let i = 0; i < max_iterations; i++)
+    {
+        var lerp_var = i / max_iterations;
+        col_arr.push([
+            lerp(col1[0], col2[0], lerp_var),
+            lerp(col1[1], col2[1], lerp_var),
+            lerp(col1[2], col2[2], lerp_var)
+        ]);
+    }
+    return col_arr;
+}
+
 function mandelbrot(image_w, image_h, zoom_amount)
 {
     var x_range = default_x_range/zoom_amount;
     var x_offset = default_x_offset/zoom_amount;
     var y_range = default_y_range/zoom_amount;
     var y_offset = default_y_offset/zoom_amount;
-    var max_iterations = 100;
-
-    //var image_w = 900;
-    //var image_h = 750;
+    
     var arr = new Uint8ClampedArray(image_w*image_h*4);
+
+    var surround_col_arr = get_colours();
+    var mandelbrot_col = [18, 18, 28];
 
     for (let pixel_y = 0; pixel_y < image_h; pixel_y++)
     {
@@ -39,16 +63,16 @@ function mandelbrot(image_w, image_h, zoom_amount)
             var i = ((pixel_y * image_w) + pixel_x)*4;
             if (iterations < max_iterations)
             {
-                arr[i]   = 32;
-                arr[i+1] = 32;
-                arr[i+2] = 48;
+                arr[i]   = surround_col_arr[iterations][0];
+                arr[i+1] = surround_col_arr[iterations][1];
+                arr[i+2] = surround_col_arr[iterations][2];
                 arr[i+3] = 255;
             }
             else
             {
-                arr[i]   = 0;
-                arr[i+1] = 0;
-                arr[i+2] = 0;
+                arr[i]   = mandelbrot_col[0];
+                arr[i+1] = mandelbrot_col[1];
+                arr[i+2] = mandelbrot_col[2];
                 arr[i+3] = 255;
             }
         }
