@@ -66,7 +66,7 @@ function test()
 
     ctx.clearRect(0, 0, cw, ch);
     var t0 = new Date();
-    ctx.putImageData(mandelbrot(900, 900, 2), 20, 20);
+    ctx.putImageData(mandelbrot(cw, ch, 1), 20, 20);
     var t1 = new Date();
     console.log('mandelbrot time: ' + (t1.getMilliseconds() - t0.getMilliseconds()));
  
