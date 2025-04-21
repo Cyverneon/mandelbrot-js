@@ -7,6 +7,11 @@ var max_iterations = 100;
 
 var surround_col_arr;
 
+function test()
+{
+    console.log("test hello");
+}
+
 function lerp(a, b, t)
 {
     return a + ((b-a) * t);
