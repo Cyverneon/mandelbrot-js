@@ -1,9 +1,11 @@
 var default_x_range = 3.00;
-var default_x_offset = -2.0;
+var default_x_offset = -1.5;
 var default_y_range = 3.00;
 var default_y_offset = -1.5;
 
-var max_iterations = 50;
+var max_iterations = 100;
+
+var surround_col_arr;
 
 function lerp(a, b, t)
 {
@@ -36,26 +38,28 @@ function mandelbrot(image_w, image_h, zoom_amount)
     
     var arr = new Uint8ClampedArray(image_w*image_h*4);
 
-    var surround_col_arr = get_colours();
     var mandelbrot_col = [18, 18, 28];
 
     for (let pixel_y = 0; pixel_y < image_h; pixel_y++)
     {
         for (let pixel_x = 0; pixel_x < image_w; pixel_x++)
         {
-            // scale coordinates to lie inside range used for mandelbrot
+            // scale coordinates to lie inside range
             var x0 = ((pixel_x / image_w) * x_range) + x_offset;
             var y0 = ((pixel_y / image_h) * y_range) + y_offset;
 
-            var x = 0.0;
-            var y = 0.0;
+            var x = x0;
+            var y = y0;
+
+            var cx = 0.37;
+            var cy = 0.37;
 
             var iterations = 0;
 
             while(((x*x) + (y*y)) < 4 && iterations < max_iterations)
             {
-                var x_temp = x*x - y*y + x0;
-                y = 2*x*y+y0;
+                var x_temp = x*x - y*y + cx;
+                y = 2*x*y+cy;
                 x = x_temp;
                 iterations++;
             }
@@ -81,19 +85,20 @@ function mandelbrot(image_w, image_h, zoom_amount)
     return new ImageData(arr, image_w);
 }
 
-function test()
+function setup()
 {
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
     var cw = canvas.width;
     var ch = canvas.height;
+    // precompute colours to use for pixels outside set depending on how many iterations they stayed constrained for
+    surround_col_arr = get_colours();
 
     ctx.clearRect(0, 0, cw, ch);
     var t0 = new Date();
     ctx.putImageData(mandelbrot(cw, ch, 1), 20, 20);
     var t1 = new Date();
     console.log('mandelbrot time: ' + (t1.getMilliseconds() - t0.getMilliseconds()));
- 
 }
 
 
